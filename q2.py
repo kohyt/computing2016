@@ -53,7 +53,10 @@ try:
     for line in range(len(lines)):
         lines[line] = lines[line].split()
         array.append(int(lines[line][2]))
-
+    
+    #2.1
+    print(binary(array,500,0,19))
+    #2.2
     print(quicksort(array))
 
 except FileNotFoundError:
