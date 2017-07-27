@@ -1,116 +1,77 @@
-try:
-
-    # open file
-    infile = open("WIDEST.TXT",'r')
-
-    # read file
-    lines = infile.readlines()
-
-    # close file
-    infile.close()
-
-    import datetime
-
-    for line in range(len(lines)):
-        lines[line] = lines[line].strip().split(",")
-
-    cities = []
-    lowest = []
-    highest = []
-
-    # input up to 3 cities with highest and lowest temperatures
-    for i in range(3):
-        city = input("Enter city: ")
-        low = input("Enter lowest temperature: ")
-        high = input("Enter highest temperature: ")
-
-        # presence check
-        while len(city) == 0 or len(low) == 0 or len(high) == 0:
-            print("Please enter value.")
-            city = input("Enter city: ")
-            low = input("Enter lowest temperature: ")
-            high = input("Enter highest temperature: ")
-
-        # data type check
-        # city -- alphabets
-        while city.isnumeric():
-            print("Please enter city name.")
-            city = input("Enter city: ")
-
-        # temperatures -- numbers
-        while low.isalpha() or high.isalpha():
-            print("Please enter integer value.")
-            low = input("Enter lowest temperature: ")
-            high = input("Enter highest temperature: ")
-
-        # range check
-        while int(low) < -90:
-            print("Out of range - lowest")
-            low = input("Enter lowest temperature: ")
-
-        while int(high) > 60:
-            print("Out of range - highest")
-            high = input("Enter highest temperature: ")
-
-        # storing values
-        cities.append(city)
-
-        # temperatures may have decimals
-        lowest.append(float(low))
-        highest.append(float(high))
-
-    greatest = 0
-
-    # calculate greatest absolute difference in temperature readings
-    for x in range(len(low)+1):
-        difference = highest[x] - lowest[x]
-        if difference > greatest:
-            greatest = difference
-            cty = cities[x]
-            
-    # display city and greatest absolute difference in temperature readings
-    print("{} has the greatest absolute difference in temperature readings which is {}".format(cty,greatest))
-
-    # get date of entry
-    today = datetime.date.today()
-
-    # convert date as list to string
-    current = ""
-    for x in range(len(lines[0])):
-        current = current + lines[0][x]
-
-    # storing data
-    year = int(current[:4])
-
-    if current[5] == 0:
-        month = int(current[6])
-    month = int(current[5:7])
-
-    day = int(current[8:])
-
-    # convert date as string to date format
-    current_date = datetime.date(year,month,day)
-
-    # number of days elapsed since greatest absolute difference
-    difference = today - current_date
-
-    # output message for the number of days elapsed
-    print("Number of days elapsed since the greatest absolute difference in temperature readings: {}".format(difference.days))
-
-    # comparing if new entry has greater absolute difference
-    if greatest > float(lines[1][1]):
+def decimalToBinary(decimalnumber):
+    binary = ""
     
-        # open file
-        infile = open("WIDEST.TXT",'w')
+    # convert decimal number to binary
+    quotient = decimalnumber
+    while quotient > 0:
+        remainder = quotient % 2
+        quotient = quotient // 2
+        
+        # string remainder from the back
+        binary = str(remainder) + binary
+        
+    # count the number of "0"s required
+    if len(binary) < 8:
+        number = 8 - len(binary)
+        binary = ("0"*number) + binary
 
-        # write file
-        infile.write(str(today) + "\n")
-        infile.write("{0}".format(cty))
-        infile.write("," + str(greatest))
+    # return 8-bit binary string result
+    return binary
 
-        # close file
-        infile.close()
+# paste data in decimal.txt 
+data = [18,0,255,128,64]
+
+for x in range(len(data)):
+    print(decimalToBinary(data[x]))
+
+string = input("Enter 8-bit binary: ")
+
+def bitshift(string):
+    # validate input
+    allowed = ["0","1"]
+    for x in range(len(string)):
+        while string[x] not in allowed:
+            return False
+    
+    # range check
+    while len(string) < 8 or len(string) > 8:
+        print("Not 8-bit binary entered")
+        return False
+
+    # presence check
+    while len(string) == 0:
+        print("No input.")
+        return False
+
+    # shift the first bit to the last position
+    string = string[1:] + string[0]
+
+    return string
+    
+print(bitshift(string))
+
+def encryption(plain_text):
+    result = ""
+    for x in range(len(plain_text)):
+        # add 1 to ascii value of each letter in input
+        asc = ord(plain_text[x]) + 1
+
+        # convert to 8-bit binary string
+        binary = decimalToBinary(asc)
+
+        # shift binary string 1 place to the left
+        final = bitshift(binary)
+
+        # concatenate all characters in each string
+        result = result + " " + final
+
+    # output 
+    return result
+
+for x in range(2):
+    plain_text = input("Enter plain text: ")
+    print(encryption(plain_text))
+
+    
 
 
-except FileNotFoundError:
-    print("WIDEST.TXT not found.")
